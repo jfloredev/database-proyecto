@@ -1,0 +1,15 @@
+# Global dockerignore
+**/__pycache__/
+**/*.pyc
+**/.pytest_cache/
+**/.mypy_cache/
+**/.venv/
+**/venv/
+
+# Node
+frontend/node_modules/
+frontend/build/
+
+# Python build
+backend/.venv/
+backend/*.log

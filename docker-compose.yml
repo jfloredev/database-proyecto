@@ -1,0 +1,53 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:15
+    container_name: mifarma_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-db_mifarma}
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-12345678}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d ${DB_NAME:-db_mifarma}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mifarma_backend
+    environment:
+      DB_HOST: ${DB_HOST:-postgres}
+      DB_NAME: ${DB_NAME:-db_mifarma}
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-12345678}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_BASE_URL: ${REACT_APP_API_BASE_URL:-http://localhost:8080}
+    container_name: mifarma_frontend
+    depends_on:
+      - backend
+    ports:
+      - "3004:80"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+    driver: local

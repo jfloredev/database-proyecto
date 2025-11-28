@@ -1,0 +1,9 @@
+export { Header } from './Header';
+export { Footer } from './Footer';
+export { NavTabs } from './NavTabs';
+export { ClientesTable } from './ClientesTable';
+export { MedicamentosTable } from './MedicamentosTable';
+export { EmpleadosTable } from './EmpleadosTable';
+export { SedesTable } from './SedesTable';
+export { MonederoTable } from './MonederoTable';
+export { SplashScreen } from './SplashScreen';
